@@ -1,5 +1,4 @@
 import type { IBaseExtension } from '@/app/extensions/components/BaseExtensions'
-import { styled } from 'styled-components'
 
 export interface IFixedExtension extends IBaseExtension {
   id: number
@@ -32,7 +31,6 @@ export const FixedExtensions = ({
 
   return (
     <Section>
-      <SectionTitle>고정 확장자</SectionTitle>
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <CheckboxGrid>
         {extensions.map((ext) => (
@@ -63,7 +61,9 @@ const ExtensionCheckbox = ({
     <StyledCheckbox
       type="checkbox"
       checked={extension.blocked}
-      onChange={(e) => onToggle(extension.id, e.target.checked)}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        onToggle(extension.id, e.target.checked)
+      }
       disabled={disabled}
     />
     <CheckboxText>{extension.name}</CheckboxText>
@@ -72,10 +72,6 @@ const ExtensionCheckbox = ({
 
 const Section = ({ children }: { children: React.ReactNode }) => (
   <div className="mb-6">{children}</div>
-)
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-semibold text-gray-700 mb-2">{children}</h2>
 )
 
 const CheckboxGrid = ({ children }: { children: React.ReactNode }) => (
@@ -88,9 +84,14 @@ const CheckboxLabel = ({ children }: { children: React.ReactNode }) => (
   </label>
 )
 
-const StyledCheckbox = styled.input`
-  h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed
-`
+const StyledCheckbox = ({
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) => (
+  <input
+    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+    {...props}
+  />
+)
 
 const CheckboxText = ({ children }: { children: React.ReactNode }) => (
   <span className="text-gray-800">{children}</span>
@@ -98,18 +99,6 @@ const CheckboxText = ({ children }: { children: React.ReactNode }) => (
 
 const ErrorMessage = ({ children }: { children: React.ReactNode }) => (
   <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
-    {children}
-  </div>
-)
-
-const LoadingMessage = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex items-center justify-center h-16 text-gray-500">
-    {children}
-  </div>
-)
-
-const EmptyMessage = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex items-center justify-center h-16 text-gray-400 text-sm">
     {children}
   </div>
 )

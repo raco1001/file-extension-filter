@@ -61,8 +61,6 @@ export const CustomExtensions = ({
 
   return (
     <Section>
-      <SectionTitle>커스텀 확장자</SectionTitle>
-
       <CustomExtensionInput
         extensions={extensions || []}
         fixedExtensions={fixedExtensions || []}
@@ -83,8 +81,4 @@ export const CustomExtensions = ({
 
 const Section = ({ children }: { children: React.ReactNode }) => (
   <div className="mb-6">{children}</div>
-)
-
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-semibold text-gray-700 mb-2">{children}</h2>
 )
