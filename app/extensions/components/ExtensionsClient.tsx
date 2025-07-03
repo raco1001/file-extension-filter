@@ -2,11 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import type { ExtensionsResponse } from '@/lib/api/types'
-// @ts-ignore
 import { FixedExtensions } from '@/app/extensions/components/FixedExtensions'
-// @ts-ignore
 import { CustomExtensions } from '@/app/extensions/components/CustomExtensions'
-// @ts-ignore
 import {
   updateFixedExtensionAction,
   createCustomExtensionAction,
@@ -25,7 +22,6 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
   const handleFixedToggle = async (name: string, blocked: boolean) => {
     setError(null)
 
-    // 낙관적 업데이트
     setData((prev) => ({
       ...prev,
       fixed: prev.fixed.map((ext) =>
@@ -34,12 +30,10 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
     }))
 
     startTransition(() => {
-      // @ts-ignore
       updateFixedExtensionAction({ name, blocked })
         .then((result) => {
           if (!result.success) {
             setError(result.error || '설정 변경에 실패했습니다')
-            // 실패시 원래 상태로 롤백
             setData((prev) => ({
               ...prev,
               fixed: prev.fixed.map((ext) =>
@@ -47,11 +41,9 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
               ),
             }))
           }
-          // @ts-ignore
         })
         .catch((err) => {
           setError('설정 변경 중 오류가 발생했습니다')
-          // 실패시 원래 상태로 롤백
           setData((prev) => ({
             ...prev,
             fixed: prev.fixed.map((ext) =>
@@ -66,7 +58,6 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
     setError(null)
 
     startTransition(() => {
-      // @ts-ignore
       createCustomExtensionAction({ name })
         .then((result) => {
           if (result.success && result.data) {
@@ -77,7 +68,6 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
           } else {
             setError(result.error || '확장자 추가에 실패했습니다')
           }
-          // @ts-ignore
         })
         .catch((err) => {
           setError('확장자 추가 중 오류가 발생했습니다')
@@ -88,26 +78,21 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
   const handleDeleteCustom = async (name: string) => {
     setError(null)
 
-    // 낙관적 업데이트
     setData((prev) => ({
       ...prev,
       custom: prev.custom.filter((ext) => ext.name !== name),
     }))
 
     startTransition(() => {
-      // @ts-ignore
       deleteCustomExtensionAction({ name })
         .then((result) => {
           if (!result.success) {
             setError(result.error || '확장자 삭제에 실패했습니다')
-            // 실패시 원래 상태로 롤백 (페이지 새로고침)
             window.location.reload()
           }
-          // @ts-ignore
         })
         .catch((err) => {
           setError('확장자 삭제 중 오류가 발생했습니다')
-          // 실패시 원래 상태로 롤백
           window.location.reload()
         })
     })

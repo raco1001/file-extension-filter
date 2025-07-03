@@ -1,9 +1,4 @@
-// Extension 관련 상수
-export const EXTENSION_CONSTANTS = {
-  MAX_CUSTOM_EXTENSIONS: 200,
-  MAX_EXTENSION_LENGTH: 20,
-  MIN_EXTENSION_LENGTH: 1,
-} as const
+import { EXTENSION_CONSTANTS } from '@/app/extensions/components/BaseExtensions'
 
 // 간단한 검증 함수들 (zod 대신 사용)
 export const validateExtensionName = (name: string): string | null => {
@@ -23,7 +18,6 @@ export const validateExtensionName = (name: string): string | null => {
   return null
 }
 
-// API 요청 검증 함수들
 export const validateUpdateFixedExtension = (
   data: any,
 ): { name: string; blocked: boolean } | string => {
@@ -56,7 +50,6 @@ export const validateDeleteCustomExtension = (
   return { name: data.name }
 }
 
-// 간단한 미들웨어 생성기 (zod validator 대신)
 export const jsonValidator = (validateFn: (data: any) => any) => {
   return async (c: any, next: any) => {
     try {
@@ -73,7 +66,6 @@ export const jsonValidator = (validateFn: (data: any) => any) => {
         )
       }
 
-      // 검증된 데이터를 컨텍스트에 저장
       c.set('validatedData', result)
       await next()
     } catch (error) {

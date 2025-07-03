@@ -1,5 +1,3 @@
-// Edge runtime 가능! (Supabase HTTP-based)
-
 import { createHonoApp, createApiResponse } from '@/lib/hono/factory'
 import { handle } from 'hono/vercel'
 import { getAllExtensions } from '@/lib/supabase/queries'
@@ -28,4 +26,4 @@ app.get('/', async (c) => {
 })
 
 export const GET = handle(app)
-export const runtime = 'edge' // ✅ Supabase로 Edge Runtime 가능!
+export const runtime = 'edge'

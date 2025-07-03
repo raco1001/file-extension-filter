@@ -1,5 +1,3 @@
-// Edge runtime 가능! (Supabase HTTP-based)
-
 import { createHonoApp, createApiResponse } from '@/lib/hono/factory'
 import { handle } from 'hono/vercel'
 import { updateFixedExtension } from '@/lib/supabase/queries'

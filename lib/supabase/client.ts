@@ -18,8 +18,6 @@ export const supabaseAdmin = createClient(
   },
 )
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
-
 export type Database = {
   public: {
     Tables: {

@@ -48,9 +48,9 @@ app.post('/', async (c) => {
         error.message.includes('이미 존재') ||
         error.message.includes('동일한 이름')
       ) {
-        statusCode = 409 // Conflict
+        statusCode = 409
       } else if (error.message.includes('최대')) {
-        statusCode = 400 // Bad Request
+        statusCode = 400
       }
     }
 
