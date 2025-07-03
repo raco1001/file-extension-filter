@@ -11,9 +11,9 @@ const app = createHonoApp()
 app.put('/', async (c) => {
   try {
     const body = await c.req.json()
-    const { name, blocked } = body
+    const { id, blocked } = body
 
-    if (typeof name !== 'string' || typeof blocked !== 'boolean') {
+    if (typeof id !== 'number' || typeof blocked !== 'boolean') {
       return c.json(
         createApiResponse(
           false,
@@ -25,13 +25,13 @@ app.put('/', async (c) => {
       )
     }
 
-    const data = await updateFixedExtension(name, blocked)
+    const data = await updateFixedExtension(id, blocked)
 
     return c.json(
       createApiResponse(
         true,
         data,
-        `고정 확장자 "${name}"이 성공적으로 업데이트되었습니다`,
+        `고정 확장자 "${data.name}"이 성공적으로 업데이트되었습니다`,
       ),
       200,
     )

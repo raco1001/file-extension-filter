@@ -12,17 +12,24 @@ import type {
   DeleteCustomExtensionRequest,
 } from '@/lib/hono/validators'
 
+import {
+  validateExtensionName,
+  validateCreateCustomExtension,
+  validateDeleteCustomExtension,
+  validateUpdateFixedExtension,
+} from '@/lib/hono/validators'
+
 export async function updateFixedExtensionAction(
   data: UpdateFixedExtensionRequest,
 ) {
   try {
-    const result = await updateFixedExtension(data.name, data.blocked)
+    const result = await updateFixedExtension(data.id, data.blocked)
     revalidatePath('/extensions')
 
     return {
       success: true,
       data: result,
-      message: `고정 확장자 "${data.name}"이 성공적으로 업데이트되었습니다`,
+      message: `고정 확장자 "${result.name}"이 성공적으로 업데이트되었습니다`,
     }
   } catch (error) {
     console.error('updateFixedExtensionAction error:', error)
@@ -40,6 +47,14 @@ export async function createCustomExtensionAction(
   data: CreateCustomExtensionRequest,
 ) {
   try {
+    const nameError = validateExtensionName(data.name)
+    if (nameError) {
+      return {
+        success: false,
+        error: nameError,
+      }
+    }
+
     const result = await addCustomExtension(data.name)
     revalidatePath('/extensions')
 
@@ -64,12 +79,20 @@ export async function deleteCustomExtensionAction(
   data: DeleteCustomExtensionRequest,
 ) {
   try {
-    await deleteCustomExtension(data.name)
+    const validation = validateDeleteCustomExtension(data)
+    if (typeof validation === 'string') {
+      return {
+        success: false,
+        error: validation,
+      }
+    }
+
+    await deleteCustomExtension(validation.name)
     revalidatePath('/extensions')
 
     return {
       success: true,
-      message: `커스텀 확장자 "${data.name}"이 성공적으로 삭제되었습니다`,
+      message: `커스텀 확장자 "${validation.name}"이 성공적으로 삭제되었습니다`,
     }
   } catch (error) {
     console.error('deleteCustomExtensionAction error:', error)

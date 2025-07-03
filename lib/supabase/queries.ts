@@ -8,7 +8,7 @@ export async function getFixedExtensions(): Promise<FixedExtension[]> {
   const { data, error } = await supabaseAdmin
     .from('fixed_extensions')
     .select('*')
-    .order('name')
+    .order('id')
 
   if (error) {
     throw new Error(`Failed to fetch fixed extensions: ${error.message}`)
@@ -31,13 +31,13 @@ export async function getCustomExtensions(): Promise<CustomExtension[]> {
 }
 
 export async function updateFixedExtension(
-  name: string,
+  id: number,
   blocked: boolean,
 ): Promise<FixedExtension> {
   const { data, error } = await supabaseAdmin
     .from('fixed_extensions')
     .update({ blocked })
-    .eq('name', name)
+    .eq('id', id)
     .select()
     .single()
 

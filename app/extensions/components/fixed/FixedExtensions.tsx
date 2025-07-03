@@ -1,4 +1,5 @@
 import type { IBaseExtension } from '@/app/extensions/components/BaseExtensions'
+import { styled } from 'styled-components'
 
 export interface IFixedExtension extends IBaseExtension {
   id: number
@@ -10,7 +11,7 @@ export type IFixedExtensions = IFixedExtension[]
 
 interface FixedExtensionsProps {
   extensions: IFixedExtensions
-  onToggle: (name: string, blocked: boolean) => Promise<void>
+  onToggle: (id: number, blocked: boolean) => Promise<void>
   isLoading?: boolean
   error?: string | null
 }
@@ -21,9 +22,9 @@ export const FixedExtensions = ({
   isLoading = false,
   error = null,
 }: FixedExtensionsProps) => {
-  const handleToggle = async (name: string, blocked: boolean) => {
+  const handleToggle = async (id: number, blocked: boolean) => {
     try {
-      await onToggle(name, blocked)
+      await onToggle(id, blocked)
     } catch (error) {
       console.error('Failed to toggle extension:', error)
     }
@@ -32,32 +33,24 @@ export const FixedExtensions = ({
   return (
     <Section>
       <SectionTitle>고정 확장자</SectionTitle>
-
       {error && <ErrorMessage>{error}</ErrorMessage>}
-
-      {isLoading ? (
-        <LoadingMessage>고정 확장자 목록을 불러오는 중...</LoadingMessage>
-      ) : !extensions || extensions.length === 0 ? (
-        <EmptyMessage>고정 확장자가 없습니다.</EmptyMessage>
-      ) : (
-        <CheckboxGrid>
-          {extensions.map((ext) => (
-            <ExtensionCheckbox
-              key={ext.id}
-              extension={ext}
-              onToggle={handleToggle}
-              disabled={isLoading}
-            />
-          ))}
-        </CheckboxGrid>
-      )}
+      <CheckboxGrid>
+        {extensions.map((ext) => (
+          <ExtensionCheckbox
+            key={ext.id}
+            extension={ext}
+            onToggle={handleToggle}
+            disabled={isLoading}
+          />
+        ))}
+      </CheckboxGrid>
     </Section>
   )
 }
 
 interface ExtensionCheckboxProps {
   extension: IFixedExtension
-  onToggle: (name: string, blocked: boolean) => void
+  onToggle: (id: number, blocked: boolean) => void
   disabled?: boolean
 }
 
@@ -70,7 +63,7 @@ const ExtensionCheckbox = ({
     <StyledCheckbox
       type="checkbox"
       checked={extension.blocked}
-      onChange={(e) => onToggle(extension.name, e.target.checked)}
+      onChange={(e) => onToggle(extension.id, e.target.checked)}
       disabled={disabled}
     />
     <CheckboxText>{extension.name}</CheckboxText>
@@ -95,14 +88,9 @@ const CheckboxLabel = ({ children }: { children: React.ReactNode }) => (
   </label>
 )
 
-const StyledCheckbox = ({
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) => (
-  <input
-    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-    {...props}
-  />
-)
+const StyledCheckbox = styled.input`
+  h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed
+`
 
 const CheckboxText = ({ children }: { children: React.ReactNode }) => (
   <span className="text-gray-800">{children}</span>

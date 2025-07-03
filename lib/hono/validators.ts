@@ -1,6 +1,5 @@
 import { EXTENSION_CONSTANTS } from '@/app/extensions/components/BaseExtensions'
 
-// 간단한 검증 함수들 (zod 대신 사용)
 export const validateExtensionName = (name: string): string | null => {
   const trimmed = name.trim().toLowerCase()
 
@@ -20,13 +19,13 @@ export const validateExtensionName = (name: string): string | null => {
 
 export const validateUpdateFixedExtension = (
   data: any,
-): { name: string; blocked: boolean } | string => {
+): { id: number; blocked: boolean } | string => {
   if (!data || typeof data !== 'object') return '잘못된 요청 데이터입니다'
-  if (typeof data.name !== 'string') return '확장자 이름이 필요합니다'
+  if (typeof data.id !== 'number') return '확장자 ID가 필요합니다'
   if (typeof data.blocked !== 'boolean')
     return '차단 상태는 boolean 값이어야 합니다'
 
-  return { name: data.name, blocked: data.blocked }
+  return { id: data.id, blocked: data.blocked }
 }
 
 export const validateCreateCustomExtension = (
@@ -80,7 +79,6 @@ export const jsonValidator = (validateFn: (data: any) => any) => {
   }
 }
 
-// 타입 정의
-export type UpdateFixedExtensionRequest = { name: string; blocked: boolean }
+export type UpdateFixedExtensionRequest = { id: number; blocked: boolean }
 export type CreateCustomExtensionRequest = { name: string }
 export type DeleteCustomExtensionRequest = { name: string }

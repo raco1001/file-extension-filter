@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from 'react'
 import type { ExtensionsResponse } from '@/lib/api/types'
-import { FixedExtensions } from '@/app/extensions/components/FixedExtensions'
-import { CustomExtensions } from '@/app/extensions/components/CustomExtensions'
+import { FixedExtensions } from '@/app/extensions/components/fixed/FixedExtensions'
+import { CustomExtensions } from '@/app/extensions/components/custom/CustomExtensions'
 import {
   updateFixedExtensionAction,
   createCustomExtensionAction,
   deleteCustomExtensionAction,
 } from '@/app/extensions/actions'
+import { EXTENSION_CONSTANTS } from './BaseExtensions'
 
 interface ExtensionsClientProps {
   initialData: ExtensionsResponse
@@ -19,25 +20,25 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const handleFixedToggle = async (name: string, blocked: boolean) => {
+  const handleFixedToggle = async (id: number, blocked: boolean) => {
     setError(null)
 
     setData((prev) => ({
       ...prev,
       fixed: prev.fixed.map((ext) =>
-        ext.name === name ? { ...ext, blocked } : ext,
+        ext.id === id ? { ...ext, blocked } : ext,
       ),
     }))
 
     startTransition(() => {
-      updateFixedExtensionAction({ name, blocked })
+      updateFixedExtensionAction({ id, blocked })
         .then((result) => {
           if (!result.success) {
             setError(result.error || '설정 변경에 실패했습니다')
             setData((prev) => ({
               ...prev,
               fixed: prev.fixed.map((ext) =>
-                ext.name === name ? { ...ext, blocked: !blocked } : ext,
+                ext.id === id ? { ...ext, blocked: !blocked } : ext,
               ),
             }))
           }
@@ -47,7 +48,7 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
           setData((prev) => ({
             ...prev,
             fixed: prev.fixed.map((ext) =>
-              ext.name === name ? { ...ext, blocked: !blocked } : ext,
+              ext.id === id ? { ...ext, blocked: !blocked } : ext,
             ),
           }))
         })
@@ -83,19 +84,17 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
       custom: prev.custom.filter((ext) => ext.name !== name),
     }))
 
-    startTransition(() => {
-      deleteCustomExtensionAction({ name })
-        .then((result) => {
-          if (!result.success) {
-            setError(result.error || '확장자 삭제에 실패했습니다')
-            window.location.reload()
-          }
-        })
-        .catch((err) => {
-          setError('확장자 삭제 중 오류가 발생했습니다')
+    deleteCustomExtensionAction({ name })
+      .then((result) => {
+        if (!result.success) {
+          setError((result.error as string) || '확장자 삭제에 실패했습니다')
           window.location.reload()
-        })
-    })
+        }
+      })
+      .catch((err) => {
+        setError(err.message || '확장자 삭제 중 오류가 발생했습니다')
+        window.location.reload()
+      })
   }
 
   return (
@@ -131,6 +130,7 @@ export function ExtensionsClient({ initialData }: ExtensionsClientProps) {
         onAdd={handleAddCustom}
         onDelete={handleDeleteCustom}
         isLoading={isPending}
+        isMax={data.custom.length >= EXTENSION_CONSTANTS.MAX_CUSTOM_EXTENSIONS}
         error={null}
       />
     </>
