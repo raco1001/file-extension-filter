@@ -24,9 +24,10 @@ Vercel 운영 환경에 최적화된 Next.js + Hono.js (+ Supabase)파일 확장
 │   ├── api/
 │   │   ├── client.ts          # API 클라이언트
 │   │   └── server.ts          # 서버 타입 정의
-│   └── db/
+│   └── supbase/
+│       ├── client.ts          # Supabase 클라이언트
 │       ├── queries.ts         # 데이터베이스 쿼리
-│       └── schema.ts          # DB 스키마
+│       └── server.ts          # 서버 타입 정의
 ├── middleware.ts              # Edge 미들웨어
 └── vercel.json               # Vercel 배포 설정
 ```
