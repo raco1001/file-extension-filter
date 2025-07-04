@@ -120,7 +120,7 @@ export const CustomExtensionInput = ({
           onClick={handleAddExtension}
           disabled={isDisabled || !newExtension.trim()}
         >
-          {isSubmitting ? '추가 중...' : '+ 추가'}
+          + 추가
         </AddButton>
       </InputGroup>
     </>
